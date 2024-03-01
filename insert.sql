@@ -43,11 +43,11 @@ VALUES
 
 INSERT INTO Supplier (SupplierVAT, SupplierName, Address, Phone, Email)
 VALUES 
-(),
-(),
-(),
-(),
-();
+('DK10000001', 'Elgiganten', 'Butiksvej 23 2620 Albertslund', '+4560510013', 'El@giganten.dk'),
+('DK10000002', 'Power', 'Butiksvej 21 2620 Albertslund', '+4553343035', 'kontor@power.dk'),
+('DE123456789', 'Media Markt', 'TysklandStrasse 1 13187 Pankow', '+499234564381', 'Desk@MedMar.com'),
+('NL123456789B01', 'Amazon', null, 'Langegracht 69-H 2312 NW Leiden', '+31-24-3611111', 'office@Amazon.nl'),
+('GB123456789', 'Amazon', null, '27 Fox Lane RG17 9ZS Bockhampton', '+442071234567', 'office@Amazon.co.uk');
 
 INSERT INTO Supply (InvoiceID, SupplierVAT, Date)
 VALUES
@@ -69,19 +69,29 @@ VALUES
 
 INSERT INTO Sale (SaleID, Date)
 VALUES
-(401, ),
-(),
-(),
-(),
-();
+(401, 2023-03-31),
+(402, 2023-06-12),
+(403, 2023-11-10),
+(404, 2023-08-05),
+(405, 2024-01-22),
+(406, 2023-04-27),
+(407, 2023-12-01),
+(408, 2024-02-29),
+(409, 2023-05-10),
+(410, 2023-09-30);
 
 INSERT INTO Sale_of_Product (SaleID, ProductID, Quantity, Value)
 VALUES
-(),
-(),
-(),
-(),
-();
+(401),
+(402),
+(403),
+(404),
+(405),
+(406),
+(407),
+(408),
+(409),
+(410);
 
 INSERT INTO Product_Return (SaleID, ProductID, Date, Quantity)
 VALUES

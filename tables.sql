@@ -12,7 +12,7 @@ CREATE TABLE Product_Category (
 )
 
 CREATE TABLE Supplier (
-    SupplierVAT varchar(20) PRIMARY KEY,
+    SupplierVAT varchar(12) PRIMARY KEY,
     SupplierName varChar(50),
     Address varChar(100),
     Phone char(18),
