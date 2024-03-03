@@ -103,16 +103,19 @@ VALUES
 
 INSERT INTO Product_Return (SaleID, ProductID, Date, Quantity)
 VALUES
-(),
-(),
-(),
-(),
-();
+(401, 101, 2023-04-03, 13),
+(402, 102, 2023-06-24, 6),
+(408, 106, 2024-03-01, 1),
+(407, 104, 2023-12-09, 12),
+(410, 107, 44, 2023-11-15);
 
 INSERT INTO Stock (ProductID, Quantity)
-VALUES
-(),
-(),
-(),
-(),
-();
+SELECT ProductID, M.Quantity - N.Quantity AS Quantity 
+FROM Product_Supply M NATURAL JOIN 
+(SELECT ProductID, I.Quantity - J.Quantity AS N.Quantity FROM 
+Sale_of_Product I NATURAL JOIN Product_Return J ON I.ProductID = J.ProductID) N 
+ON M.ProductID = N.ProductID;
+
+--Jeg skal bruge Quantity fra "Product_Supply" hvor jeg trække quantity fra "Sale_of_Product" fra,
+--Og til sidst lægger jeg Quantity fra "Product_Return" til igen.
+--Jeg aner ikke om den Query virker :'(
