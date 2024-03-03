@@ -46,21 +46,21 @@ VALUES
 ('DK10000001', 'ElLeverandøren', 'Butiksvej 23 2620 Albertslund', '+4560510013', 'El@leverandøren.dk'),
 ('DK10000002', 'PowerSquared', 'Butiksvej 21 2620 Albertslund', '+4553343035', 'kontor@power2.dk'),
 ('DE123456789', 'Media Markt', 'TysklandStrasse 1 13187 Pankow', '+499234564381', 'Desk@MedMar.com'),
-('NL123456789B01', 'Amazon', null, 'Langegracht 69-H 2312 NW Leiden', '+31-24-3611111', 'office@Amazon.nl'),
-('GB123456789', 'Amazon', null, '27 Fox Lane RG17 9ZS Bockhampton', '+442071234567', 'office@Amazon.co.uk');
+('NL123456789B01', 'Amazon', 'Langegracht 69-H 2312 NW Leiden', '+31-24-3611111', 'office@Amazon.nl'),
+('GB123456789', 'Amazon', '27 Fox Lane RG17 9ZS Bockhampton', '+442071234567', 'office@Amazon.co.uk');
 
 INSERT INTO Supply (InvoiceID, SupplierVAT, Date)
 VALUES
-(301, 'DK10000001', 2022-03-31),
-(302, 'DK10000002', 2022-06-12),
-(303, 'DE123456789', 2022-11-10),
-(304, 'NL123456789B01', 2022-08-05),
-(305, 'GB123456789', 2023-01-22),
-(306, 'DE123456789', 2022-04-27),
-(307, 'NL123456789B01', 2022-12-01),
-(308, 'DK10000002', 2022-02-29),
-(309, 'NL123456789B01', 2022-05-10),
-(310, 'DK10000001', 2022-09-30);
+(301, 'DK10000001', '2022-03-31'),
+(302, 'DK10000002', '2022-06-12'),
+(303, 'DE123456789', '2022-11-10'),
+(304, 'NL123456789B01', '2022-08-05'),
+(305, 'GB123456789', '2023-01-22'),
+(306, 'DE123456789', '2022-04-27'),
+(307, 'NL123456789B01', '2022-12-01'),
+(308, 'DK10000002', '2022-02-28'),
+(309, 'NL123456789B01', '2022-05-10'),
+(310, 'DK10000001', '2022-09-30');
 
 INSERT INTO Product_Supply (InvoiceID, ProductID, Quantity, Value)
 VALUES
@@ -77,16 +77,16 @@ VALUES
 
 INSERT INTO Sale (SaleID, Date)
 VALUES
-(401, 2023-03-31),
-(402, 2023-06-12),
-(403, 2023-11-10),
-(404, 2023-08-05),
-(405, 2024-01-22),
-(406, 2023-04-27),
-(407, 2023-12-01),
-(408, 2024-02-29),
-(409, 2023-05-10),
-(410, 2023-09-30);
+(401, '2023-03-31'),
+(402, '2023-06-12'),
+(403, '2023-11-10'),
+(404, '2023-08-05'),
+(405, '2024-01-22'),
+(406, '2023-04-27'),
+(407, '2023-12-01'),
+(408, '2024-02-28'),
+(409, '2023-05-10'),
+(410, '2023-09-30');
 
 INSERT INTO Sale_of_Product (SaleID, ProductID, Quantity, Value)
 VALUES
@@ -103,19 +103,48 @@ VALUES
 
 INSERT INTO Product_Return (SaleID, ProductID, Date, Quantity)
 VALUES
-(401, 101, 2023-04-03, 13),
-(402, 102, 2023-06-24, 6),
-(408, 106, 2024-03-01, 1),
-(407, 104, 2023-12-09, 12),
-(410, 107, 44, 2023-11-15);
+(401, 101, '2023-04-03', 13),
+(402, 102, '2023-06-24', 6),
+(408, 106, '2024-03-01', 1),
+(407, 104, '2023-12-09', 12),
+(410, 107, '2023-11-15', 44);
 
 INSERT INTO Stock (ProductID, Quantity)
-SELECT ProductID, M.Quantity - N.Quantity AS Quantity 
-FROM Product_Supply M NATURAL JOIN 
-(SELECT ProductID, I.Quantity - J.Quantity AS N.Quantity FROM 
-Sale_of_Product I NATURAL JOIN Product_Return J ON I.ProductID = J.ProductID) N 
-ON M.ProductID = N.ProductID;
-
+SELECT ps.ProductID, ps.Intake - sp.Sales + pr.TotalReturn FROM 
+    (
+        SELECT
+            ProductID,
+            SUM(Quantity) AS Intake
+        FROM
+            Product_Supply
+        GROUP BY
+            ProductID
+    ) ps 
+LEFT JOIN
+    (
+        SELECT
+            ProductID,
+            SUM(Quantity) AS Sales
+        FROM
+            Sale_of_Product
+        GROUP BY
+            ProductID
+    ) sp ON sp.ProductID = ps.ProductID 
+LEFT JOIN
+    (
+        SELECT
+            ProductID,
+            SUM(Quantity) AS TotalReturn
+        FROM
+            Product_Return
+        GROUP BY
+            ProductID
+    ) pr ON sp.ProductID = pr.ProductID
+	ORDER BY ProductID;
+        
 --Jeg skal bruge Quantity fra "Product_Supply" hvor jeg trække quantity fra "Sale_of_Product" fra,
 --Og til sidst lægger jeg Quantity fra "Product_Return" til igen.
 --Jeg aner ikke om den Query virker :'(
+/*
+Natural join Product_Return og Product_Supply
+*/
