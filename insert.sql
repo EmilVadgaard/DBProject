@@ -51,16 +51,16 @@ VALUES
 
 INSERT INTO Supply (InvoiceID, SupplierVAT, Date)
 VALUES
-(301, 'DK10000001', '2022-03-31'),
-(302, 'DK10000002', '2022-06-12'),
-(303, 'DE123456789', '2022-11-10'),
-(304, 'NL123456789B01', '2022-08-05'),
-(305, 'GB123456789', '2023-01-22'),
-(306, 'DE123456789', '2022-04-27'),
-(307, 'NL123456789B01', '2022-12-01'),
-(308, 'DK10000002', '2022-02-28'),
-(309, 'NL123456789B01', '2022-05-10'),
-(310, 'DK10000001', '2022-09-30');
+(301, 'DK10000001', '2021-03-31'),
+(302, 'DK10000002', '2021-06-12'),
+(303, 'DE123456789', '2021-11-10'),
+(304, 'NL123456789B01', '2021-08-05'),
+(305, 'GB123456789', '2022-01-22'),
+(306, 'DE123456789', '2021-04-27'),
+(307, 'NL123456789B01', '2021-12-01'),
+(308, 'DK10000002', '2021-02-28'),
+(309, 'NL123456789B01', '2021-05-10'),
+(310, 'DK10000001', '2021-09-30');
 
 INSERT INTO Product_Supply (InvoiceID, ProductID, Quantity, Value)
 VALUES
@@ -77,16 +77,16 @@ VALUES
 
 INSERT INTO Sale (SaleID, Date)
 VALUES
-(401, '2023-03-31'),
-(402, '2023-06-12'),
-(403, '2023-11-10'),
-(404, '2023-08-05'),
-(405, '2024-01-22'),
-(406, '2023-04-27'),
-(407, '2023-12-01'),
-(408, '2024-02-28'),
-(409, '2023-05-10'),
-(410, '2023-09-30');
+(401, '2022-03-31'),
+(402, '2022-06-12'),
+(403, '2022-11-10'),
+(404, '2022-08-05'),
+(405, '2023-01-22'),
+(406, '2022-04-27'),
+(407, '2022-12-01'),
+(408, '2023-02-28'),
+(409, '2022-05-10'),
+(410, '2022-09-30');
 
 INSERT INTO Sale_of_Product (SaleID, ProductID, Quantity, Value)
 VALUES
@@ -110,7 +110,7 @@ VALUES
 (410, 107, '2023-11-15', 44);
 
 INSERT INTO Stock (ProductID, Quantity)
-SELECT ps.ProductID, ps.Intake - sp.Sales + pr.TotalReturn FROM 
+SELECT ps.ProductID, ps.Intake - sp.Sales + COALESCE(pr.TotalReturn,0) FROM 
     (
         SELECT
             ProductID,
@@ -134,7 +134,7 @@ LEFT JOIN
     (
         SELECT
             ProductID,
-            SUM(Quantity) AS TotalReturn
+            COALESCE(SUM(Quantity),0) AS TotalReturn
         FROM
             Product_Return
         GROUP BY
