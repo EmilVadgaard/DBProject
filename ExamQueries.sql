@@ -32,7 +32,7 @@ FROM Months
 		FROM Sale 
 			 	 JOIN Sale_Of_Product ON
 			 Sale.SaleID = Sale_Of_Product.SaleID
-		WHERE EXTRACT(YEAR FROM Date) = 2023
+		WHERE EXTRACT(YEAR FROM Date) = 2022
 		GROUP BY SaleMonth) ON
 	Months.month = SaleMonth;
 
@@ -60,7 +60,7 @@ WITH SaleProdCategory AS(
 
 (SELECT CategoryID, SUM(Quantity) AS NumOfSoldItems
 FROM SaleProdCategory
-WHERE EXTRACT(YEAR FROM Date) = 2023
+WHERE EXTRACT(YEAR FROM Date) = 2022
 GROUP BY CategoryID
 HAVING SUM(Quantity) >= ALL(SELECT SUM(Quantity)
 							FROM SaleProdCategory
