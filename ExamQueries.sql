@@ -41,13 +41,13 @@ FROM Months
 SELECT SaleID, (Value*Quantity) AS Value
 FROM Sale_Of_Product
 WHERE (Value*Quantity) >= ALL(
-    SELECT Value*Quantity
-    FROM Sale_Of_Product
+   							  SELECT Value*Quantity
+    						  FROM Sale_Of_Product
 );
 
 /* (iii)
 */
-WITH SaleProdCategory AS(
+WITH SoldItemsPerCategory AS(
     SELECT P1.ProductID, P1.CategoryID, Quantity, Date
 	FROM ((Product P1 
 		   	   JOIN Product_Category P2 ON
@@ -59,24 +59,18 @@ WITH SaleProdCategory AS(
 )
 
 (SELECT CategoryID, SUM(Quantity) AS NumOfSoldItems
-FROM SaleProdCategory
+FROM SoldItemsPerCategory
 WHERE EXTRACT(YEAR FROM Date) = 2022
 GROUP BY CategoryID
-HAVING SUM(Quantity) >= ALL(SELECT SUM(Quantity)
-							FROM SaleProdCategory
-							WHERE EXTRACT(YEAR FROM Date) = 2022
-							GROUP BY CategoryID
-))
+ORDER BY NumOfSoldItems DESC
+LIMIT 1)
 	UNION
 (SELECT CategoryID, SUM(Quantity) AS NumOfSoldItems
-FROM SaleProdCategory
+FROM SoldItemsPerCategory
 WHERE EXTRACT(YEAR FROM Date) = 2022
 GROUP BY CategoryID
-HAVING SUM(Quantity) <= ALL(SELECT SUM(Quantity)
-							FROM SaleProdCategory
-							WHERE EXTRACT(YEAR FROM Date) = 2022
-							GROUP BY CategoryID
-));
+ORDER BY NumOfSoldItems ASC
+LIMIT 1);
 
 /* (iv)
 */
