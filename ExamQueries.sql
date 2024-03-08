@@ -84,18 +84,8 @@ FROM (Product_Supply P1
 	  	  FULL OUTER JOIN Product_Return P2 ON
       P1.ProductID=P2.ProductID
 GROUP BY P1.ProductID
-HAVING COALESCE(SUM(S.Quantity * S.Value), 0)
-	   - COALESCE(SUM(P2.Quantity * S.Value), 0)
-	   - COALESCE(SUM(P1.Quantity * P1.Value), 0) >= ALL(
-	SELECT COALESCE(SUM(S.Quantity * S.Value), 0)
-	       - COALESCE(SUM(P2.Quantity * S.Value), 0)
-	       - COALESCE(SUM(P1.Quantity * P1.Value), 0) AS Profit
-	FROM (Product_Supply P1 
-		  	  FULL OUTER JOIN Sale_Of_Product S ON 
-		  P1.ProductID=S.ProductID) 
-			  FULL OUTER JOIN Product_Return P2 ON
-    	  P1.ProductID=P2.ProductID
-	GROUP BY P1.ProductID);
+ORDER BY Profit DESC
+LIMIT 1;
 
 /* (v)
 */
